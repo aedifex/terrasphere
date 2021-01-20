@@ -7,7 +7,7 @@ Simple exercise in IaC &amp;&amp; CI/CD leveraging Terraform and CircleCI
 
 Enter Terracube, a simple and elegant sample application demonstrating continuously deployment of infrastructure using CircleCI and Terraform.
 
-[![<ORG_NAME>](https://circleci.com/github/aedifex/terrasphere.svg?style=shield)](https://app.circleci.com/pipelines/github/aedifex/terrasphere)
+[![<ORG_NAME>](https://circleci.com/gh/aedifex/terrasphere.svg?style=shield)](https://app.circleci.com/pipelines/github/aedifex/terrasphere)
 
 ## Getting Started
 
