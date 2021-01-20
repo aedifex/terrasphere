@@ -9,6 +9,8 @@ Enter Terracube, a simple and elegant sample application demonstrating continuou
 
 [![<ORG_NAME>](https://circleci.com/gh/aedifex/terrasphere.svg?style=shield)](https://app.circleci.com/pipelines/github/aedifex/terrasphere)
 
+[![<ORG_NAME>](https://circleci.com/gh/aedifex/terrasphere.svg?style=svg)](https://app.circleci.com/pipelines/github/aedifex/terrasphere)
+
 ## Getting Started
 
 You’ll need:
