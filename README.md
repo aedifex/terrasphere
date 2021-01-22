@@ -13,11 +13,56 @@ Enter Terracube, a simple and elegant sample application demonstrating continuou
 
 You’ll need:
 
-1.	Terraform
-2.	CircleCI
-3.	Github
-4.	AWS account (with corresponding S3 bucket)
+1.	A CircleCI account
+2.	A Github account
+3.	An AWS account (with corresponding S3 bucket)
 
-Clone the repo and copy the vars template file into a file called `terraform.tfvars`. There are several options when it comes to specifying which AWS credentials / IAM profile to use. Assuming you have the AWS CLI installed and configured locally, terraform will use the default IAM profile. This can be customized by leveraging the `profile` & `shared_credentials_file` variables.
+First, fork the repository to your Github account and clone the source code onto your local machine.
 
-A Context populated with valid AWS credentials is used for authentication from CircleCI to AWS; Contexts will be mounted to *all* jobs that interface with AWS, including `plan` jobs.
+Copy the vars template file (`terraform.tfvars.template`) into a file called `terraform.tfvars` and fill in the appropriate values. All of the variables used have default values, this includes AWS region and AMI.
+
+Next, we're going to create a remote backend for state storage. Externalizing the statefile is absolutely critical when using terraform in a CI environment.
+
+`cd s3_backend`
+
+`terraform init && terraform apply`
+
+You should output that looks like:
+
+```
+Apply complete! Resources: 1 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+s3_bucket_name = 5092f11c-xxxx-xxxx-xxxx-xxxxxxx-backend
+```
+
+Copy the value of the s3_bucket_name.
+
+``cd ..``
+
+Add the value of the bucket name from the previous step to `bucket = "YOUR-UNIQUE-BUCKET-ID"` in `main.tf`
+
+Commit these changes upstream. We're now ready to start running builds on CircleCI.
+
+You'll need to add this project to circleci in order to trigger builds on the platform.
+
+CircleCI offers a very generous free tier, so worry not if you don't already have an account (hopefully you do!).
+
+On the project dashboard, e.g.
+https://app.circleci.com/projects/project-dashboard/github/aedifex/
+
+Simply click setup project to configure CircleCI to start building on every commit. CircleCI's robust API handles all of the magic under the hood, much like terraform handles the magic of deploying infrastructure.
+
+Once you've added the project, circle is going to trigger an initial pipeline by default and then during every subsequent push event. The `config.yml` file will be used for circleci configuration, i.e. steps to execute when running a pipeline.
+
+Your first pipeline will fail, but don't worry, this is expected.
+
+You'll need to add your AWS credentials as project specific environment variables.
+
+After you've added the project to circle and setup your environment variables, you're ready to deploy some infrastructure! Exciting, I know.
+
+The shape of our workflow looks something like:
+
+![Image of jobs after staging merge](https://raw.githubusercontent.com/aedifex/terrasphere/.images/TerraformWorkflow.png)
+
