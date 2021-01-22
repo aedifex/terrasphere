@@ -64,5 +64,5 @@ After you've added the project to circle and setup your environment variables, y
 
 The shape of our workflow looks something like:
 
-![Image of jobs after staging merge](https://raw.githubusercontent.com/aedifex/terrasphere/.images/TerraformWorkflow.png)
+![Image of jobs after staging merge](https://github.com/aedifex/terrasphere/blob/master/.images/TerraformWorkflow.png)
 
