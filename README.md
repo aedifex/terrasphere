@@ -45,11 +45,9 @@ Copy the value of the s3_bucket_name.
 
 ``cd ..``
 
-Add the value of the bucket name from the previous step to `bucket = "YOUR-UNIQUE-BUCKET-ID"` in `main.tf`
+Add the value of the bucket name from the previous step to `bucket = "YOUR-UNIQUE-BUCKET-ID"` in `main.tf` under the `backend` module.
 
-You can now commit these changes upstream.
-
-We're now ready to start running builds on CircleCI.
+You can now commit these changes upstream. We're now ready to start running builds on CircleCI.
 
 You'll need to add this project to CircleCI in order to trigger builds on the platform.
 
@@ -64,15 +62,13 @@ Once you've added the project, CircleCI is going to trigger an initial pipeline 
 
 The `config.yml` file will be used for CircleCI configuration, i.e. steps to execute when running a pipeline.
 
-Your first pipeline will fail, but don't worry, this is expected.
-
-You'll need to add your AWS credentials as project specific environment variables.
+Your first pipeline will fail, but don't worry, this is expected. You'll need to add your AWS credentials as project specific environment variables.
 
 More on how to setup project specific environment variables can be found here: https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project
 
 Once you've added the project to circle and setup your environment variables, you're ready to deploy some infrastructure! 
 
-Exciting, I know.
+You can now tell your friends and family you've deployed infrastructure on AWS. Exciting, I know.
 
 The shape of our workflow looks something like:
 

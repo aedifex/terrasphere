@@ -5,20 +5,26 @@ provider "aws" {
 provider "template" {
 }
 
+backend "s3" {
+  bucket = "YOUR-UNIQUE-BUCKET-ID"
+  key    = "terraform/terrasphere/terraform.tfstate"
+  region = "us-east-1"
+}
+
 locals {
   cloud_config_config = <<-END
     #cloud-config
     ${jsonencode({
-      write_files = [
-        {
-          path        = "/etc/index.html"
-          permissions = "0777"
-          owner       = "root:root"
-          encoding    = "b64"
-          content     = filebase64("${path.module}/index.html")
-        },
-      ]
-    })}
+  write_files = [
+    {
+      path        = "/etc/index.html"
+      permissions = "0777"
+      owner       = "root:root"
+      encoding    = "b64"
+      content     = filebase64("${path.module}/index.html")
+    },
+  ]
+})}
   END
 }
 
@@ -35,7 +41,7 @@ data "cloudinit_config" "example" {
   part {
     content_type = "text/x-shellscript"
     filename     = "example.sh"
-    content  = <<-EOF
+    content      = <<-EOF
       #!/bin/bash
       cd /etc/
       nohup busybox httpd -f -p 8080 &
