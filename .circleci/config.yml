@@ -1,12 +1,43 @@
 version: 2
 
+# Define the shape of our workflow and
+# relationship between various jobs.
+workflows:
+  version: 2
+  plan_approve_apply:
+    jobs:
+      - plan-apply
+      # Manual approval step gates `apply`.
+      - hold-apply:
+          type: approval
+          requires:
+            - plan-apply
+      - apply:
+          requires:
+            - hold-apply
+      - plan-destroy:
+          requires:
+            - apply
+      # Another manual approval gate.
+      - hold-destroy:
+          type: approval
+          requires:
+            - plan-destroy
+      - destroy:
+          requires:
+            - hold-destroy
+
+# Define jobs (think of jobs as "stages" in our pipeline).
 jobs:
   plan-apply:
     working_directory: "~/src"
+    # Stock docker image with latest version of terraform cli installed.
     docker:
       - image: hashicorp/terraform:light
     steps:
       - checkout
+      # Save output to file called "tfapply"
+      # and persist to workspace for subsequent jobs.
       - run:
           name: terraform init & plan
           command: |
@@ -17,6 +48,8 @@ jobs:
           paths:
             - .
 
+  # Apply actually "applies" the infrastructure using
+  # the plan generated in previous job.
   apply:
     docker:
       - image: hashicorp/terraform:light
@@ -24,7 +57,7 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: terraform
+          name: terraform apply
           command: |
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
@@ -32,6 +65,8 @@ jobs:
           paths:
             - .
 
+  # Plan destroy is the inverse of plan apply, which also
+  # generates an output file "tfdestroy".
   plan-destroy:
     docker:
       - image: hashicorp/terraform:light
@@ -47,6 +82,8 @@ jobs:
           paths:
             - .
 
+  # This is the final stage in our end-to-end workflow
+  # which destroys any/all resources created.
   destroy:
     docker:
       - image: hashicorp/terraform:light
@@ -57,26 +94,3 @@ jobs:
           name: terraform destroy
           command: |
             terraform apply -auto-approve tfdestroy
-
-workflows:
-  version: 2
-  plan_approve_apply:
-    jobs:
-      - plan-apply
-      - hold-apply:
-          type: approval
-          requires:
-            - plan-apply
-      - apply:
-          requires:
-            - hold-apply
-      - plan-destroy:
-          requires:
-            - apply
-      - hold-destroy:
-          type: approval
-          requires:
-            - plan-destroy
-      - destroy:
-          requires:
-            - hold-destroy
