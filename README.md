@@ -60,18 +60,29 @@ https://app.circleci.com/projects/project-dashboard/github/<GH-user-name>/
 
 Simply click setup project to configure CircleCI to start building on every commit. CircleCI's robust API handles all of the magic under the hood, much like terraform handles the magic of deploying infrastructure.
 
-Once you've added the project, CircleCI is going to trigger an initial pipeline by default and then during every subsequent push event. 
-
-The `config.yml` file will be used for CircleCI configuration, i.e. steps to execute when running a pipeline.
-
-Your first pipeline will fail, but don't worry, this is expected. You'll need to add your AWS credentials as project specific environment variables.
+Once you've added the project, CircleCI is going to trigger an initial pipeline by default and then during every subsequent push event. The `config.yml` file will be used for CircleCI configuration, i.e. steps to execute when running a pipeline. Your first pipeline will fail, but don't worry, this is expected. You'll need to add your AWS credentials as project specific environment variables.
 
 More on how to setup project specific environment variables can be found here: https://circleci.com/docs/2.0/env-vars/#setting-an-environment-variable-in-a-project
 
 Once you've added the project to circle and setup your environment variables, you're ready to deploy some infrastructure! 
 
-You can now tell your friends and family you've deployed infrastructure on AWS. Exciting, I know.
-
 The shape of our workflow looks something like:
 
-![Image of jobs after staging merge](https://github.com/aedifex/terrasphere/blob/master/.images/TerraformWorkflow.png)
+![Plan-approve-apply workflow](https://github.com/aedifex/terrasphere/blob/master/.images/TerraformWorkflow.png)
+
+The `apply` and `destroy` jobs are both gated by an approval step
+
+Once you've explicitly *approved* the apply job, look for the corresponding output from the `terraform apply` step:
+
+```Outputs:
+
+instance_ip = [
+  "123.123.123.123",
+]
+```
+
+Throw that IP into your favorite web-browser (and port if you specified one, e.g. 123.123.123.123:8888) and behold! You've deployed an EC2 instance that responds to web traffic using Terraform and CircleCI. I'd certainly share this news with my friends and family. Exciting, I know.
+
+Thanks for stopping by. Hopefully you found this valuable.
+
+Happy building!
